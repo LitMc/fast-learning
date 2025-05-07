@@ -7,6 +7,17 @@
     <title>Vite + TS</title>
   </head>
   <body>
+    <!-- 横並びのトップバー -->
+    <header id="topbar">
+      <nav id="nav">
+        <button data-set="demo">県名</button>
+        <button data-set="phone">市外局番</button>
+      </nav>
+
+      <!-- 右端寄せ：最初は hidden -->
+      <button id="stop-btn" hidden>🚪やめる</button>
+    </header>
+
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

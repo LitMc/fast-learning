@@ -54,3 +54,36 @@ html {
 }
 .toast.ok    { background: #4caf50; }  /* 緑 */
 .toast.fail  { background: #f44336; }  /* 赤 */
+
+/* トップバー */
+#topbar {
+  display: flex;
+  justify-content: space-between;   /* 左メニュー ↔ 右ボタン */
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+/* セット選択ボタン群 */
+#nav button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #888;
+  border-radius: 6px;
+  background: #eee;
+  cursor: pointer;
+}
+#nav button.active {
+  background: #4caf50;
+  color: #fff;
+  border-color: #4caf50;
+}
+
+/* やめるボタン（右側） */
+#stop-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #d33;
+  background: #f44336;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
