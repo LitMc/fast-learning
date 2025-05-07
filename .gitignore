@@ -1,0 +1,68 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ───────────────────────────────
+# 1. Node / pnpm
+# ───────────────────────────────
+node_modules/
+.pnpm-store/          # pnpm のグローバルキャッシュ
+package-lock.json     # npm を併用していないなら
+yarn.lock             # yarn を併用していないなら
+
+# ───────────────────────────────
+# 2. Vite ビルド出力
+# ───────────────────────────────
+dist/                 # `pnpm run build` の結果
+*.log                 # Vite/Node のログ
+
+# ───────────────────────────────
+# 3. データビルド生成物
+#    ※ GitHub Pages へ push するのは dist/ だけ
+# ───────────────────────────────
+public/cards/*.json   # CSV → JSON で自動生成されるカード
+public/flags/         # （国旗を CSV から DL 生成するなら）
+
+# ───────────────────────────────
+# 4. VS Code / DevContainer
+# ───────────────────────────────
+.vscode/**
+!.vscode/settings.json        # チーム設定だけ共有したい場合は ! で除外解除
+!.vscode/extensions.json
+.devcontainer/.env*           # シークレットを含む場合
+
+# ───────────────────────────────
+# 5. OS／エディタ一時ファイル
+# ───────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+
+# ───────────────────────────────
+# 6. dotenv などシークレット
+# ───────────────────────────────
+.env*
+!.env.example        # 雛形は共有
