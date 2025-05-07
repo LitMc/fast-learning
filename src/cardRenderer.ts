@@ -43,14 +43,24 @@ function renderChoice(
   return el('span', {}, ['?']);
 }
 
-/* ------------- カード丸ごと ------------- */
-export function renderCard(card: Card, onAnswered: (correct: boolean) => void) {
-  root.innerHTML = ''; // クリア
+function shuffle<T>(a: T[]): T[] {
+  return [...a].sort(() => 0.5 - Math.random());
+}
+
+export function renderCard(
+  card: Card,
+  onAnswered: (ok: boolean) => void
+) {
+  root.innerHTML = '';
 
   root.appendChild(renderPrompt(card.prompt));
 
   const list = el('div', { class: 'choices' });
-  card.choices.forEach((choice) => {
+
+  /* ★ ここで毎回ランダム並びに */
+  const randomized = shuffle(card.choices);
+
+  randomized.forEach((choice) => {
     list.appendChild(
       renderChoice(choice, () => {
         const ok = choice.id === card.answer;
@@ -58,5 +68,6 @@ export function renderCard(card: Card, onAnswered: (correct: boolean) => void) {
       })
     );
   });
+
   root.appendChild(list);
 }
