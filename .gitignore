@@ -27,30 +27,30 @@ dist-ssr
 # 1. Node / pnpm
 # ───────────────────────────────
 node_modules/
-.pnpm-store/          # pnpm のグローバルキャッシュ
-package-lock.json     # npm を併用していないなら
-yarn.lock             # yarn を併用していないなら
+.pnpm-store/
+package-lock.json
+yarn.lock
 
 # ───────────────────────────────
 # 2. Vite ビルド出力
 # ───────────────────────────────
-dist/                 # `pnpm run build` の結果
-*.log                 # Vite/Node のログ
+dist/
+*.log
 
 # ───────────────────────────────
 # 3. データビルド生成物
 #    ※ GitHub Pages へ push するのは dist/ だけ
 # ───────────────────────────────
-public/cards/*.json   # CSV → JSON で自動生成されるカード
-public/flags/         # （国旗を CSV から DL 生成するなら）
+public/cards/*.json
+public/flags/
 
 # ───────────────────────────────
 # 4. VS Code / DevContainer
 # ───────────────────────────────
 .vscode/**
-!.vscode/settings.json        # チーム設定だけ共有したい場合は ! で除外解除
+!.vscode/settings.json
 !.vscode/extensions.json
-.devcontainer/.env*           # シークレットを含む場合
+.devcontainer/.env*
 
 # ───────────────────────────────
 # 5. OS／エディタ一時ファイル
