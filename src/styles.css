@@ -93,3 +93,13 @@ html {
   color: #555;
   margin: 0 0 0.5rem;
 }
+
+/* 右側ボタンを横並びに */
+.right { display:flex; gap:.5rem; }
+
+#progress-btn {
+  padding:.4rem .8rem;
+  border:1px solid #2196f3;
+  background:#2196f3;
+  color:#fff; border-radius:6px; cursor:pointer;
+}

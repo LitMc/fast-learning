@@ -7,15 +7,16 @@
     <title>Vite + TS</title>
   </head>
   <body>
-    <!-- 横並びのトップバー -->
     <header id="topbar">
       <nav id="nav">
         <button data-set="demo">県名</button>
         <button data-set="phone">市外局番</button>
       </nav>
 
-      <!-- 右端寄せ：最初は hidden -->
-      <button id="stop-btn" hidden>🚪やめる</button>
+      <div class="right">
+        <button id="progress-btn">学習状況</button>
+        <button id="stop-btn" hidden>やめる</button>
+      </div>
     </header>
 
     <div id="app"></div>
