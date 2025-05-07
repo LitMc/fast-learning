@@ -87,3 +87,9 @@ html {
   border-radius: 6px;
   cursor: pointer;
 }
+
+.stat {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0 0.5rem;
+}

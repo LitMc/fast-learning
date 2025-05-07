@@ -1,8 +1,9 @@
-import type { Card, Prompt, Choice } from './types';
+// src/cardRenderer.ts
+import type { Card, Prompt, Choice, Stat } from './types';
 
+/* ------------------------------ basic helpers ----------------------------- */
 const root = document.getElementById('app') as HTMLDivElement;
 
-/* ------------- 描画ヘルパー ------------- */
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   attrs: Record<string, string> = {},
@@ -10,64 +11,71 @@ function el<K extends keyof HTMLElementTagNameMap>(
 ): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
   Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
-  children.forEach((c) =>
+  children.forEach(c =>
     node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c)
   );
   return node;
 }
 
-/* ------------- Prompt ------------- */
+/* ----------------------------- prompt render ----------------------------- */
 function renderPrompt(p: Prompt): HTMLElement {
-  if (p.type === 'text') return el('h2', {}, [p.text]);
-  if (p.type === 'image')
-    return el('img', { src: p.src, width: '200', height: 'auto' });
+  if (p.type === 'text')  return el('h2', {}, [p.text]);
+  if (p.type === 'image') return el('img', { src: p.src, width: '200' });
   return el('p', {}, ['Unsupported prompt']);
 }
 
-/* ------------- Choice ------------- */
+/* ---------------------------- choice render ------------------------------ */
 function renderChoice(
   c: Choice,
   onClick: () => void
-): HTMLButtonElement | HTMLElement {
+): HTMLButtonElement {
+  const btn = el('button', { class: 'choice' }) as HTMLButtonElement;
+
   if (c.type === 'text') {
-    const btn = el('button', { class: 'choice' }, [c.text]) as HTMLButtonElement;
-    btn.onclick = onClick;
-    return btn;
-  }
-  if (c.type === 'image') {
-    const btn = el('button', { class: 'choice img-choice' }) as HTMLButtonElement;
+    btn.textContent = c.text;
+  } else {
+    btn.classList.add('img-choice');
     btn.appendChild(el('img', { src: c.src, width: '120' }));
-    btn.onclick = onClick;
-    return btn;
   }
-  return el('span', {}, ['?']);
+  btn.onclick = onClick;
+  return btn;
 }
 
-function shuffle<T>(a: T[]): T[] {
-  return [...a].sort(() => 0.5 - Math.random());
-}
-
+/* ----------------------------- public API -------------------------------- */
 export function renderCard(
   card: Card,
-  onAnswered: (ok: boolean) => void
+  stat: Stat | undefined,
+  onAnswered: (correct: boolean, choiceId: string) => void
 ) {
   root.innerHTML = '';
 
+  // 正答率パネル（あれば）
+  if (stat) {
+    const rate = ((stat.correct / stat.asked) * 100).toFixed(0);
+    root.appendChild(
+      el('p', { class: 'stat' }, [`正答 ${stat.correct}/${stat.asked} (${rate}%)`])
+    );
+  } else {
+    root.appendChild(
+      el('p', { class: 'stat' }, ['正答 0/0 (0%)'])
+    );
+  }
+
+  // 本文
   root.appendChild(renderPrompt(card.prompt));
 
-  const list = el('div', { class: 'choices' });
+  // 選択肢グリッド
+  const container = el('div', { class: 'choices' });
+  // 並び順ランダム
+  const shuffled = [...card.choices].sort(() => Math.random() - 0.5);
 
-  /* ★ ここで毎回ランダム並びに */
-  const randomized = shuffle(card.choices);
-
-  randomized.forEach((choice) => {
-    list.appendChild(
+  shuffled.forEach(choice =>
+    container.appendChild(
       renderChoice(choice, () => {
         const ok = choice.id === card.answer;
-        onAnswered(ok);
+        onAnswered(ok, choice.id);
       })
-    );
-  });
-
-  root.appendChild(list);
+    )
+  );
+  root.appendChild(container);
 }

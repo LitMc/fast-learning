@@ -1,76 +1,101 @@
+// src/main.ts
 import './styles.css';
-import type { Card } from './types';
+import type { Card, Stat } from './types';
 import { renderCard } from './cardRenderer';
+import { loadHistory, saveHistory } from './historyStorage';
 
-/* ---------- ユーティリティ ---------- */
-const shuffle = <T,>(a: T[]) => [...a].sort(() => 0.5 - Math.random());
+/* ---------------------------------- util ---------------------------------- */
+const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
 
-/* ---------- トースト ---------- */
-function showToast(text: string, ok: boolean, ms = 800) {
-  const t = document.createElement('div');
-  t.className = `toast ${ok ? 'ok' : 'fail'}`;
-  t.textContent = text;
-  document.body.appendChild(t);
-  requestAnimationFrame(() => t.classList.add('show'));
+const showToast = (msg: string, ok: boolean, ms = 800) => {
+  const el = document.createElement('div');
+  el.className = `toast ${ok ? 'ok' : 'fail'}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
   setTimeout(() => {
-    t.classList.remove('show');
-    setTimeout(() => t.remove(), 300);
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
   }, ms);
-}
+};
 
-/* ---------- DOM 取得 ---------- */
-const nav     = document.getElementById('nav') as HTMLElement;
+/* --------------------------------- DOM refs -------------------------------- */
+const nav     = document.getElementById('nav')      as HTMLElement;
 const stopBtn = document.getElementById('stop-btn') as HTMLButtonElement;
-const root    = document.getElementById('app') as HTMLDivElement;
+const root    = document.getElementById('app')      as HTMLDivElement;
 
-/* ---------- グローバル状態 ---------- */
+/* ------------------------------ runtime state ------------------------------ */
 let cards: Card[] = [];
-let idx   = 0;
+let idx = 0;
 let running = false;
+let history = loadHistory();
 
-/* ---------- データ読み込み ---------- */
-async function loadCards(name: string): Promise<Card[]> {
-  const res = await fetch(`/cards/${name}.json`);
-  return shuffle(await res.json());
-}
+/* ---------------------------- stats (正答率) ----------------------------- */
+const buildStats = (): Record<string, Stat> => {
+  const stats: Record<string, Stat> = {};
+  history.forEach(h => {
+    const s = (stats[h.cardId] ??= { asked: 0, correct: 0 });
+    s.asked += 1;
+    if (h.correct) s.correct += 1;
+  });
+  return stats;
+};
 
-/* ---------- 出題ループ ---------- */
-function ask() {
-  if (!running) return;                      // 停止フラグ
+/* ------------------------------ data loading ------------------------------- */
+const loadCards = async (setName: string): Promise<Card[]> =>
+  shuffle(await (await fetch(`/cards/${setName}.json`)).json());
+
+/* ------------------------------ quiz routine ------------------------------ */
+const ask = () => {
+  if (!running) return;
   if (idx >= cards.length) {
     idx = 0;
     shuffle(cards);
   }
-  const card = cards[idx++];
-  renderCard(card, (correct) => {
-    showToast(correct ? '⭕ 正解！' : '❌ 不正解', correct);
-    ask();                                   // 即 次へ
-  });
-}
 
-/* ---------- 開始 / 停止 ---------- */
-async function start(setName: string) {
-  running = false;           // 念のため停止
-  root.innerHTML = '';       // 画面クリア
+  const card  = cards[idx++];
+  const stats = buildStats();
+
+  renderCard(card, stats[card.id], (correct, choiceId) => {
+    // 履歴追加
+    history.push({
+      ts: Date.now(),
+      cardId:   card.id,
+      choiceId,
+      correct,
+    });
+    saveHistory(history);
+
+    showToast(correct ? '⭕ 正解！' : '❌ 不正解', correct);
+    ask();                          // すぐ次の問題
+  });
+};
+
+/* -------------------------- start / stop handlers -------------------------- */
+const start = async (setName: string) => {
+  running = false;                 // 念のため停止
+  root.innerHTML = '';
   cards = await loadCards(setName);
-  idx = 0;
-  nav.hidden = true;          // 左側メニューを隠す
-  stopBtn.hidden = false;     // 右側「やめる」を表示
+  idx   = 0;
+
+  nav.hidden     = true;
+  stopBtn.hidden = false;
+
   running = true;
   ask();
-}
+};
 
-function stop() {
+const stop = () => {
   running = false;
   root.innerHTML = '';
-  stopBtn.hidden = true;      // 右側を隠す
-  nav.hidden = false;         // 左側メニューを戻す
-}
 
-/* ---------- ボタンのイベント ---------- */
-// セット選択
-nav.querySelectorAll<HTMLButtonElement>('button').forEach((btn) => {
+  stopBtn.hidden = true;
+  nav.hidden     = false;
+};
+
+/* ---------------------------- event bindings ------------------------------ */
+nav.querySelectorAll<HTMLButtonElement>('button').forEach(btn => {
   btn.onclick = () => start(btn.dataset.set!);
 });
-// やめる
+
 stopBtn.onclick = stop;
