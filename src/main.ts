@@ -174,19 +174,12 @@ const loadCards = async (setName: string): Promise<Card[]> => {
       const correct = r[cfg.answerKey];
       const prompt = r[cfg.promptKey];
 
-      // 他のレコードからダミー選択肢を取得し、同じ promptKey を持つレコードを除外
-      const usedPromptKeys = new Set<string>([prompt]);
+      // 他のレコードからダミー選択肢を取得し、promptKeyとanswerKeyが正解と異なり、answerKeyが重複しないものを選択
       const distractors = shuffle(
-        Array.from(new Set(uniqueRows.map(x => x[cfg.answerKey])))
-          .filter(v => {
-            const distractorPrompt = uniqueRows.find(x => x[cfg.answerKey] === v)?.[cfg.promptKey];
-            if (distractorPrompt && !usedPromptKeys.has(distractorPrompt)) {
-              usedPromptKeys.add(distractorPrompt);
-              return true;
-            }
-            return false;
-          })
-      ).slice(0, cfg.choiceCount - 1);
+        uniqueRows.filter(x => x[cfg.promptKey] !== r[cfg.promptKey] && x[cfg.answerKey] !== correct)
+          .map(x => x[cfg.answerKey])
+      ).filter((v, i, self) => self.indexOf(v) === i) // answerKeyの重複を除外
+      .slice(0, cfg.choiceCount - 1);
 
       const choices = shuffle([correct!, ...distractors]).map(v => {
         const choiceRow = uniqueRows.find(x => x[cfg.answerKey] === v);
