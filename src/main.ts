@@ -284,11 +284,18 @@ nav.querySelectorAll<HTMLButtonElement>('button').forEach(btn => {
 
 stopBtn.onclick = stop;
 
+// Load theme from localStorage
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+  document.body.classList.add('dark-mode');
+  themeToggleBtn.textContent = 'ライトモード';
+}
+
 // ダークモード切り替え機能
 const toggleTheme = () => {
-  document.body.classList.toggle('dark-mode');
-  const isDarkMode = document.body.classList.contains('dark-mode');
+  const isDarkMode = document.body.classList.toggle('dark-mode');
   themeToggleBtn.textContent = isDarkMode ? 'ライトモード' : 'ダークモード';
+  localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
 };
 
 themeToggleBtn.onclick = toggleTheme;
