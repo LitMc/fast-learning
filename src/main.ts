@@ -9,18 +9,6 @@ import { quizConfigs } from './quizConfig';
 /* ---------------------------------- util ---------------------------------- */
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
 
-const showToast = (msg: string, ok: boolean, ms = 800) => {
-  const el = document.createElement('div');
-  el.className = `toast ${ok ? 'ok' : 'fail'}`;
-  el.textContent = msg;
-  document.body.appendChild(el);
-  requestAnimationFrame(() => el.classList.add('show'));
-  setTimeout(() => {
-    el.classList.remove('show');
-    setTimeout(() => el.remove(), 300);
-  }, ms);
-};
-
 /* --------------------------------- DOM refs -------------------------------- */
 const nav     = document.getElementById('nav')      as HTMLElement;
 const stopBtn = document.getElementById('stop-btn') as HTMLButtonElement;
