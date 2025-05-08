@@ -190,7 +190,7 @@ const loadCards = async (setName: string): Promise<Card[]> => {
         };
       });
       return {
-        id: `${setName}:${prompt}`,
+        id: `${setName}:${prompt}:${correct}`, // Update card ID generation to include both prompt and answer
         prompt: { type: 'text' as const, text: cfg.promptTemplate(r) },
         choices,
         answer: correct!,
@@ -201,41 +201,94 @@ const loadCards = async (setName: string): Promise<Card[]> => {
 };
 
 /* ------------------------------ quiz routine ------------------------------ */
+const N = 3; // Number of consecutive correct answers to exclude a question
+
+const updateQuestionCountDisplay = () => {
+  const totalQuestions = cards.length;
+  const remainingQuestions = cards.filter(card => {
+    const cardHistory = history.filter(h => h.cardId === card.id);
+    const recentHistory = cardHistory.slice(-N);
+    return recentHistory.length < N || recentHistory.some(h => !h.correct);
+  }).length;
+
+  const countDisplay = document.getElementById('question-count');
+  if (countDisplay) {
+    countDisplay.textContent = `残り ${remainingQuestions} 問 / 全 ${totalQuestions} 問`;
+  }
+};
+
 const ask = () => {
   if (!running) return;
-  if (idx >= cards.length) {
-    idx = 0;
-    shuffle(cards);
-  }
 
-  const card  = cards[idx++];
+  updateQuestionCountDisplay(); // Update the question count display
+
+  // Build stats for prioritization
   const stats = buildStats();
 
+  // Filter out cards with N consecutive correct answers
+  const filteredCards = cards.filter(card => {
+    const cardHistory = history.filter(h => h.cardId === card.id);
+    const recentHistory = cardHistory.slice(-N); // Get the last N attempts
+
+    // Exclude if there are at least N attempts and all are correct
+    return recentHistory.length < N || recentHistory.some(h => !h.correct);
+  });
+
+  if (filteredCards.length === 0) {
+    // No cards left to ask, show completion message
+    root.innerHTML = '<h1>コンプリートです！</h1>';
+    stopBtn.hidden = false;
+    return;
+  }
+
+  // Prioritize cards based on the existing logic
+  const prioritizedCards = shuffle(filteredCards).sort((a, b) => {
+    const statA = stats[a.id] || { asked: 0, correct: 0 };
+    const statB = stats[b.id] || { asked: 0, correct: 0 };
+
+    // Unattempted cards (asked === 0) come first
+    if (statA.asked === 0 && statB.asked > 0) return -1;
+    if (statA.asked > 0 && statB.asked === 0) return 1;
+
+    // Incorrectly answered cards (correct < asked) come next
+    const incorrectRateA = statA.asked > 0 ? (statA.asked - statA.correct) / statA.asked : 1;
+    const incorrectRateB = statB.asked > 0 ? (statB.asked - statB.correct) / statB.asked : 1;
+    if (incorrectRateA !== incorrectRateB) return incorrectRateB - incorrectRateA;
+
+    // Correctly answered cards (correct === asked) are deprioritized
+    const correctRateA = statA.asked > 0 ? statA.correct / statA.asked : 0;
+    const correctRateB = statB.asked > 0 ? statB.correct / statB.asked : 0;
+    return correctRateA - correctRateB;
+  });
+
+  // Select the next card to ask
+  const card = prioritizedCards[idx++ % prioritizedCards.length];
+
   renderCard(card, stats[card.id], (correct, choiceId) => {
-    // 履歴追加
+    // Update history
     history.push({
       ts: Date.now(),
-      cardId:   card.id,
+      cardId: card.id,
       choiceId,
       correct,
     });
     saveHistory(history);
 
-    // 正解・不正解の選択肢を強調表示
+    // Highlight correct/incorrect choices
     const selectedChoice = document.querySelector(`.choice[data-id="${choiceId}"]`);
     const correctChoice = document.querySelector(`.choice[data-id="${card.answer}"]`);
 
     if (correct) {
-      selectedChoice?.classList.add('highlight-correct'); // 緑で光る
+      selectedChoice?.classList.add('highlight-correct');
     } else {
-      selectedChoice?.classList.add('highlight-incorrect'); // 赤で光る
-      correctChoice?.classList.add('highlight-correct'); // 正解を緑で光る
+      selectedChoice?.classList.add('highlight-incorrect');
+      correctChoice?.classList.add('highlight-correct');
     }
 
-    // 次の問題への遷移はボタン押下時に行う
+    // Proceed to the next question on button click
     document.querySelectorAll<HTMLButtonElement>('.choice').forEach(button => {
       button.onclick = () => {
-        ask(); // 次の問題へ
+        ask();
       };
     });
   });
@@ -245,6 +298,12 @@ const ask = () => {
 const start = async (setName: string) => {
   running = false;                 // 念のため停止
   root.innerHTML = '';
+
+  const countDisplay = document.createElement('div');
+  countDisplay.id = 'question-count';
+  countDisplay.style.marginBottom = '1rem';
+  root.appendChild(countDisplay);
+
   cards = await loadCards(setName);
   idx   = 0;
 
@@ -262,6 +321,11 @@ const stop = () => {
   stopBtn.hidden = true;
   nav.hidden     = false;
   progressBtn.hidden = false;
+
+  const countDisplay = document.getElementById('question-count');
+  if (countDisplay) {
+    countDisplay.textContent = ''; // Clear the question count display
+  }
 
   renderMainMenu(); // Re-render the main menu when stopping the quiz
 };

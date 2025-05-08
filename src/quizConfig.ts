@@ -1,6 +1,16 @@
 import type { QuizConfig } from './types'
 export const quizConfigs: QuizConfig[] = [
   {
+    id: 'demo',
+    name: 'デモ問題',
+    csvPath: `${import.meta.env.BASE_URL}data/demo.csv`,
+    promptKey: 'city',
+    answerKey: 'prefecture',
+    choiceCount: 4,
+    promptTemplate: r => `${r.city} はどの県？`,
+    choiceTemplate: r => r.prefecture
+  },
+  {
     id: 'phone',
     name: '市外局番 から 都道府県',
     csvPath: `${import.meta.env.BASE_URL}data/phone.csv`,
