@@ -169,22 +169,23 @@ const loadCards = async (setName: string): Promise<Card[]> => {
       uniqueMap.set(key, row);
     }
   });
-  const uniqueRows = Array.from(uniqueMap.values());
+  const uniqueRows = shuffle(Array.from(uniqueMap.values()));
 
   return shuffle(
     uniqueRows.map(r => {
       const correct = r[cfg.answerKey];
-      const correctPhoneCode = r['phoneCode']; // 市外局番を取得
+      const prompt = r[cfg.promptKey];
 
-      // 他のレコードからダミー選択肢を取得し、重複と同じ市外局番を排除
-      const distractors = shuffle(
-        Array.from(new Set(uniqueRows.map(x => x[cfg.answerKey])))
-          .filter(v => v !== correct && uniqueRows.find(x => x[cfg.answerKey] === v)?.['phoneCode'] !== correctPhoneCode)
-      ).slice(0, cfg.choiceCount - 1);
+      // ダミー選択肢の候補をシャッフルしてから選択
+      const distractorCandidates = shuffle(
+        uniqueRows.filter(x => x[cfg.answerKey] !== correct && x[cfg.promptKey] !== prompt)
+      ).map(x => x[cfg.answerKey]);
+
+      const distractors = distractorCandidates.slice(0, cfg.choiceCount - 1);
 
       const choices = shuffle([correct!, ...distractors]).map(v => ({ id: v!, type: 'text' as const, text: v! }));
       return {
-        id: `${setName}:${r[cfg.promptKey]}`,
+        id: `${setName}:${prompt}`,
         prompt: { type: 'text' as const, text: cfg.promptTemplate(r) },
         choices,
         answer: correct!,
