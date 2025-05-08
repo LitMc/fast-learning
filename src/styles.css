@@ -133,7 +133,7 @@ html {
   background-color: #d4edda !important;
   border-color: #c3e6cb;
   color: #155724;
-  animation: highlight 0.5s ease-in-out;
+  animation: highlight 0.25s ease-in-out;
 }
 
 /* 不正解の選択肢を赤で光らせる */
@@ -141,7 +141,6 @@ html {
   background-color: #f8d7da !important;
   border-color: #f5c6cb;
   color: #721c24;
-  animation: highlight 0.5s ease-in-out;
 }
 
 /* ハイライトのアニメーション */
