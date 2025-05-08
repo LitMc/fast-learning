@@ -187,119 +187,49 @@ html {
   background-color: #e0e0e0;
 }
 
-/* Dark mode styles */
+/* Monokai-like dark mode styles */
 body.dark-mode,
 html.dark-mode {
-  background-color: #121212;
-  color: #e0e0e0;
-  height: 100%;
-  margin: 0;
-}
-
-body.dark-mode {
-  background-color: #121212;
-  color: #e0e0e0;
+  background-color: #272822; /* Monokai background */
+  color: #f8f8f2; /* Monokai foreground */
 }
 
 body.dark-mode #topbar {
-  background-color: #1e1e1e !important;
-  border-bottom: 1px solid #333 !important;
-  color: #e0e0e0 !important;
+  background-color: #3e3d32; /* Monokai topbar background */
+  border-bottom: 1px solid #75715e; /* Monokai border */
+  color: #f8f8f2;
 }
 
-#topbar.dark-mode {
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #333;
+body.dark-mode button {
+  background-color: #49483e; /* Monokai button background */
+  color: #f8f8f2;
+  border-color: #75715e;
 }
 
-.choice.dark-mode {
-  background-color: #1e1e1e;
-  border-color: #333;
-  color: #e0e0e0;
-}
-
-.choice.dark-mode:hover:not(.highlight-correct):not(.highlight-incorrect) {
-  background-color: #333;
+body.dark-mode button:hover {
+  background-color: #62635b; /* Monokai button hover */
 }
 
 body.dark-mode .highlight-correct {
-  background-color: #2e7d32 !important; /* Dark green */
-  border-color: #1b5e20 !important;
-  color: #a5d6a7 !important;
+  background-color: #a6e22e !important; /* Monokai green */
+  border-color: #86b817 !important;
+  color: #272822 !important;
 }
 
 body.dark-mode .highlight-incorrect {
-  background-color: #c62828 !important; /* Dark red */
-  border-color: #8e0000 !important;
-  color: #ef9a9a !important;
+  background-color: #f92672 !important; /* Monokai red */
+  border-color: #d4145a !important;
+  color: #272822 !important;
 }
 
 body.dark-mode .highlight-correct:hover {
-  background-color: #1b5e20 !important; /* Darker green for hover */
-  border-color: #144d18 !important;
+  background-color: #86b817 !important; /* Darker Monokai green */
+  border-color: #6a8e13 !important;
 }
 
 body.dark-mode .highlight-incorrect:hover {
-  background-color: #8e0000 !important; /* Darker red for hover */
-  border-color: #6b0000 !important;
-}
-
-.highlight-correct.dark-mode {
-  background-color: #2e7d32 !important;
-  border-color: #1b5e20;
-  color: #a5d6a7;
-}
-
-.highlight-correct.dark-mode:hover {
-  background-color: #1b5e20 !important; /* Darker green for hover */
-  border-color: #144d18;
-}
-
-.highlight-incorrect.dark-mode {
-  background-color: #c62828 !important;
-  border-color: #8e0000;
-  color: #ef9a9a;
-}
-
-.highlight-incorrect.dark-mode:hover {
-  background-color: #8e0000 !important; /* Darker red for hover */
-  border-color: #6b0000;
-}
-
-#stop-btn.dark-mode {
-  background-color: #b71c1c;
-  border-color: #8e0000;
-  color: #fff;
-}
-
-#progress-btn.dark-mode,
-#theme-toggle-btn.dark-mode {
-  background-color: #1565c0;
-  border-color: #0d47a1;
-  color: #fff;
-}
-
-#progress-btn.dark-mode:hover,
-#theme-toggle-btn.dark-mode:hover {
-  background-color: #0d47a1;
-}
-
-body.dark-mode #progress-btn,
-body.dark-mode #theme-toggle-btn {
-  background-color: #333 !important; /* Ensure dark background color */
-  border-color: #555;
-  color: #e0e0e0;
-}
-
-/* Ensure topbar and buttons are styled for dark mode */
-button.dark-mode {
-  background-color: #333;
-  border-color: #555;
-  color: #e0e0e0;
-}
-
-button.dark-mode:hover {
-  background-color: #444 !important; /* Ensure dark hover color */
+  background-color: #d4145a !important; /* Darker Monokai red */
+  border-color: #b01048 !important;
 }
 
 /* Style for problem selection and choice buttons */
@@ -318,11 +248,23 @@ button:hover {
 }
 
 body.dark-mode button {
-  background-color: #333;
-  color: #e0e0e0;
-  border-color: #555;
+  background-color: #49483e; /* Monokai button background */
+  color: #f8f8f2;
+  border-color: #75715e;
 }
 
 body.dark-mode button:hover {
-  background-color: #444 !important; /* Ensure dark hover color */
+  background-color: #62635b; /* Monokai button hover */
+}
+
+body.dark-mode #progress-btn,
+body.dark-mode #theme-toggle-btn {
+  background-color: #49483e !important; /* Monokai button background */
+  color: #f8f8f2 !important;
+  border-color: #75715e !important;
+}
+
+body.dark-mode #progress-btn:hover,
+body.dark-mode #theme-toggle-btn:hover {
+  background-color: #62635b !important; /* Monokai button hover */
 }
