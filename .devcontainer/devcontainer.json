@@ -27,7 +27,8 @@
     "vscode": {
       "extensions": [
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "mechatroner.rainbow-csv"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
