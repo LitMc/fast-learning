@@ -1,0 +1,68 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ───────────────────────────────
+# 1. Node / pnpm
+# ───────────────────────────────
+node_modules/
+.pnpm-store/
+package-lock.json
+yarn.lock
+
+# ───────────────────────────────
+# 2. Vite ビルド出力
+# ───────────────────────────────
+dist/
+*.log
+
+# ───────────────────────────────
+# 3. データビルド生成物
+#    ※ GitHub Pages へ push するのは dist/ だけ
+# ───────────────────────────────
+public/cards/*.json
+public/flags/
+
+# ───────────────────────────────
+# 4. VS Code / DevContainer
+# ───────────────────────────────
+.vscode/**
+!.vscode/settings.json
+!.vscode/extensions.json
+.devcontainer/.env*
+
+# ───────────────────────────────
+# 5. OS／エディタ一時ファイル
+# ───────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+
+# ───────────────────────────────
+# 6. dotenv などシークレット
+# ───────────────────────────────
+.env*
+!.env.example        # 雛形は共有

@@ -1,0 +1,47 @@
+{
+  // コンテナ名 (VS Code 接続タブに表示されるだけ)
+  "name": "Fast Learning Dev Container",
+
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
+  // Ubuntu ベースに Node を後付けする公式 Feature 構成
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+
+  "features": {
+    // Node 公式 Feature 1 本で npm / yarn / pnpm までインストール
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",          // ← 必要に応じて 18 / lts 等も可
+      "installYarn": "true",
+      "installPnpm": "true"
+    }
+  },
+  // Vite dev サーバをブラウザに自動転送
+  "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": {
+      "label": "Vite Dev",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  // VS Code 側の拡張・設定（必要最小限）
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "mechatroner.rainbow-csv",
+        "ms-python.python",
+        "janisdd.vscode-edit-csv"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true
+      }
+    }
+  },
+
+  "postCreateCommand": "pip install requests beautifulsoup4"
+}
