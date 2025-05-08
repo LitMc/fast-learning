@@ -56,13 +56,45 @@ html {
 .toast.ok    { background: #4caf50; }  /* 緑 */
 .toast.fail  { background: #f44336; }  /* 赤 */
 
-/* トップバー */
+/* Divide the topbar into two sections */
 #topbar {
   display: flex;
-  justify-content: space-between;   /* 左メニュー ↔ 右ボタン */
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
   padding: 0.5rem 1rem;
+}
+
+#topbar .left,
+#topbar .right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+#topbar .left {
+  justify-content: flex-start;
+}
+
+#topbar .right {
+  justify-content: flex-end;
+}
+
+#stop-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #d33;
+  background: #f44336;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#progress-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #2196f3;
+  background: #2196f3;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 /* セット選択ボタン群 */
@@ -79,16 +111,6 @@ html {
   border-color: #4caf50;
 }
 
-/* やめるボタン（右側） */
-#stop-btn {
-  padding: 0.4rem 0.8rem;
-  border: 1px solid #d33;
-  background: #f44336;
-  color: #fff;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
 .stat {
   font-size: 0.9rem;
   color: #555;
@@ -97,13 +119,6 @@ html {
 
 /* 右側ボタンを横並びに */
 .right { display:flex; gap:.5rem; }
-
-#progress-btn {
-  padding:.4rem .8rem;
-  border:1px solid #2196f3;
-  background:#2196f3;
-  color:#fff; border-radius:6px; cursor:pointer;
-}
 
 /* Add styling for the main menu buttons */
 .main-menu {

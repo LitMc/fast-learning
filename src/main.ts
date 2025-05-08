@@ -46,6 +46,9 @@ async function showProgress() {
   running = false;                 // 出題ループ停止
   root.innerHTML = '';
 
+  /* 戻るボタンを最初に描画 */
+  stopBtn.hidden = false;
+
   // 問題セット選択ドロップダウン
   const select = document.createElement('select');
   quizConfigs.forEach(cfg => {
@@ -128,12 +131,6 @@ async function showProgress() {
   headers[4].textContent += ' ▼';
   root.appendChild(table);
   renderStats();
-
-  /* 戻るボタン */
-  const back = document.createElement('button');
-  back.textContent = '戻る';
-  back.onclick = stop;
-  root.appendChild(back);
 }
 
 /* ボタンを結線 */
@@ -257,7 +254,6 @@ const start = async (setName: string) => {
   cards = await loadCards(setName);
   idx   = 0;
 
-  nav.hidden     = true;
   stopBtn.hidden = false;
   progressBtn.hidden = true;
 
