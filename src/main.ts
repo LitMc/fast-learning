@@ -171,15 +171,29 @@ const loadCards = async (setName: string): Promise<Card[]> => {
   if (!cfg) throw new Error(`Unknown quiz config: ${setName}`);
   const raw = await (await fetch(cfg.csvPath)).text();
   const { data } = Papa.parse<Record<string, string>>(raw, { header: true });
-  // data may include empty trailing row
   const rows = data.filter(r => Object.values(r).some(v => v));
+
+  // ユニーク化処理
+  const uniqueMap = new Map<string, Record<string, string>>();
+  rows.forEach(row => {
+    const key = `${row[cfg.promptKey]}|${row[cfg.answerKey]}`;
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, row);
+    }
+  });
+  const uniqueRows = Array.from(uniqueMap.values());
+
   return shuffle(
-    rows.map(r => {
+    uniqueRows.map(r => {
       const correct = r[cfg.answerKey];
-      // 他のレコードからダミー選択肢を取得し、重複を排除
+      const correctPhoneCode = r['phoneCode']; // 市外局番を取得
+
+      // 他のレコードからダミー選択肢を取得し、重複と同じ市外局番を排除
       const distractors = shuffle(
-        Array.from(new Set(rows.map(x => x[cfg.answerKey]))).filter(v => v !== correct)
+        Array.from(new Set(uniqueRows.map(x => x[cfg.answerKey])))
+          .filter(v => v !== correct && uniqueRows.find(x => x[cfg.answerKey] === v)?.['phoneCode'] !== correctPhoneCode)
       ).slice(0, cfg.choiceCount - 1);
+
       const choices = shuffle([correct!, ...distractors]).map(v => ({ id: v!, type: 'text' as const, text: v! }));
       return {
         id: `${setName}:${r[cfg.promptKey]}`,

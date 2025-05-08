@@ -11,11 +11,20 @@ export const quizConfigs: QuizConfig[] = [
   },
   {
     id: 'phone',
-    name: '市外局番 -> 都道府県',
+    name: '市外局番 から 都道府県',
     csvPath: '/data/phone.csv',
     promptKey: 'phoneCode',
     answerKey: 'prefecture',
     choiceCount: 4,
-    promptTemplate: r => `市外局番 ${r.phoneCode} はどの県？`
+    promptTemplate: r => `${r.phoneCode} の都道府県は？`
+  },
+  {
+    id: 'phone-to-region',
+    name: '市外局番 から 地域',
+    csvPath: '/data/phone.csv',
+    promptKey: 'phoneCode',
+    answerKey: 'region',
+    choiceCount: 4,
+    promptTemplate: r => `${r.phoneCode} の地域は？`
   }
 ]
