@@ -131,6 +131,7 @@ const start = async (setName: string) => {
 
   nav.hidden     = true;
   stopBtn.hidden = false;
+  progressBtn.hidden = true;
 
   running = true;
   ask();
@@ -142,6 +143,7 @@ const stop = () => {
 
   stopBtn.hidden = true;
   nav.hidden     = false;
+  progressBtn.hidden = false;
 };
 
 /* ---------------------------- event bindings ------------------------------ */
