@@ -34,6 +34,8 @@ export type Stat = {
 export type QuizConfig = {
   /** 問題セットの識別子 */
   id: string;
+  /** 問題セットの表示名 */
+  name: string;
   /** CSVファイルのパス */
   csvPath: string;
   /** CSVレコードから問いを作るカラム名 */

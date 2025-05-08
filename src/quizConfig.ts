@@ -2,6 +2,7 @@ import type { QuizConfig } from './types'
 export const quizConfigs: QuizConfig[] = [
   {
     id: 'demo',
+    name: 'デモ問題',
     csvPath: '/data/demo.csv',
     promptKey: 'city',
     answerKey: 'prefecture',
@@ -10,6 +11,7 @@ export const quizConfigs: QuizConfig[] = [
   },
   {
     id: 'phone',
+    name: '市外局番 -> 都道府県',
     csvPath: '/data/phone.csv',
     promptKey: 'phoneCode',
     answerKey: 'prefecture',

@@ -27,6 +27,15 @@ const stopBtn = document.getElementById('stop-btn') as HTMLButtonElement;
 const root    = document.getElementById('app')      as HTMLDivElement;
 const progressBtn = document.getElementById('progress-btn') as HTMLButtonElement;
 
+// 動的にボタンを生成
+quizConfigs.forEach(cfg => {
+  const btn = document.createElement('button');
+  btn.dataset.set = cfg.id;
+  btn.textContent = cfg.name;
+  btn.onclick = () => start(cfg.id);
+  nav.appendChild(btn);
+});
+
 /* ------------------------------ runtime state ------------------------------ */
 let cards: Card[] = [];
 let idx = 0;
@@ -39,10 +48,12 @@ async function showProgress() {
   root.innerHTML = '';
 
   // 問題セット選択ドロップダウン
-  const sets = ['demo','phone'];
   const select = document.createElement('select');
-  sets.forEach(s => {
-    const opt = document.createElement('option'); opt.value = s; opt.textContent = s; select.appendChild(opt);
+  quizConfigs.forEach(cfg => {
+    const opt = document.createElement('option');
+    opt.value = cfg.id; // idは内部的に使用
+    opt.textContent = cfg.name; // 表示名を使用
+    select.appendChild(opt);
   });
   const label = document.createElement('label'); label.textContent = '問題セット: '; label.appendChild(select);
   root.appendChild(label);
@@ -222,7 +233,11 @@ const stop = () => {
 
 /* ---------------------------- event bindings ------------------------------ */
 nav.querySelectorAll<HTMLButtonElement>('button').forEach(btn => {
-  btn.onclick = () => start(btn.dataset.set!);
+  const cfg = quizConfigs.find(c => c.id === btn.dataset.set);
+  if (cfg) {
+    btn.textContent = cfg.name; // 表示名を設定
+    btn.onclick = () => start(cfg.id);
+  }
 });
 
 stopBtn.onclick = stop;
