@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  // Add any Vite configuration options here
+  base: '/fast-learning/', // Replace with your repository name
 });
