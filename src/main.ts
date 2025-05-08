@@ -227,8 +227,23 @@ const ask = () => {
     });
     saveHistory(history);
 
-    showToast(correct ? '⭕ 正解！' : '❌ 不正解', correct);
-    ask();                          // すぐ次の問題
+    // 正解・不正解の選択肢を強調表示
+    const selectedChoice = document.querySelector(`.choice[data-id="${choiceId}"]`);
+    const correctChoice = document.querySelector(`.choice[data-id="${card.answer}"]`);
+
+    if (correct) {
+      selectedChoice?.classList.add('highlight-correct'); // 緑で光る
+    } else {
+      selectedChoice?.classList.add('highlight-incorrect'); // 赤で光る
+      correctChoice?.classList.add('highlight-correct'); // 正解を緑で光る
+    }
+
+    // 次の問題への遷移はボタン押下時に行う
+    document.querySelectorAll<HTMLButtonElement>('.choice').forEach(button => {
+      button.onclick = () => {
+        ask(); // 次の問題へ
+      };
+    });
   });
 };
 

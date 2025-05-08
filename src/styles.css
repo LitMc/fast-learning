@@ -18,6 +18,7 @@ html {
   margin-top: 1rem;
 }
 
+/* 修正: highlight-correct と highlight-incorrect を優先 */
 .choice {
   padding: 0.75rem;
   border: 1px solid #ccc;
@@ -26,7 +27,7 @@ html {
   cursor: pointer;
   transition: background 0.2s;
 }
-.choice:hover {
+.choice:hover:not(.highlight-correct):not(.highlight-incorrect) {
   background: #f0f0f0;
 }
 .img-choice img {
@@ -125,4 +126,33 @@ html {
 
 .main-menu button:hover {
   background-color: #e0e0e0;
+}
+
+/* highlight-correct と highlight-incorrect を優先するために !important を追加 */
+.highlight-correct {
+  background-color: #d4edda !important;
+  border-color: #c3e6cb;
+  color: #155724;
+  animation: highlight 0.5s ease-in-out;
+}
+
+/* 不正解の選択肢を赤で光らせる */
+.highlight-incorrect {
+  background-color: #f8d7da !important;
+  border-color: #f5c6cb;
+  color: #721c24;
+  animation: highlight 0.5s ease-in-out;
+}
+
+/* ハイライトのアニメーション */
+@keyframes highlight {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

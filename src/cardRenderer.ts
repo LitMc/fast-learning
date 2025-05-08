@@ -29,7 +29,7 @@ function renderChoice(
   c: Choice,
   onClick: () => void
 ): HTMLButtonElement {
-  const btn = el('button', { class: 'choice' }) as HTMLButtonElement;
+  const btn = el('button', { class: 'choice', 'data-id': c.id }) as HTMLButtonElement;
 
   if (c.type === 'text') {
     btn.textContent = c.text;
