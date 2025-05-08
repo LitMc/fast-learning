@@ -4,6 +4,7 @@ html {
   font-family: system-ui, sans-serif;
   background: #fafafa;
   height: 100%;
+  overflow: auto;
 }
 
 #app {
