@@ -232,6 +232,10 @@ body.dark-mode .highlight-incorrect:hover {
   border-color: #b01048 !important;
 }
 
+body.dark-mode .choice:hover:not(.highlight-correct):not(.highlight-incorrect) {
+  background-color: #444 !important; /* Dark hover background for neutral choices */
+}
+
 /* Style for problem selection and choice buttons */
 button {
   background-color: #f9f9f9;
