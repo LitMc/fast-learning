@@ -12,8 +12,8 @@ export const quizConfigs: QuizConfig[] = [
     id: 'phone',
     csvPath: '/data/phone.csv',
     promptKey: 'phoneCode',
-    answerKey: 'city',
+    answerKey: 'prefecture',
     choiceCount: 4,
-    promptTemplate: r => `市外局番 ${r.phoneCode} はどの市？`
+    promptTemplate: r => `市外局番 ${r.phoneCode} はどの県？`
   }
 ]
