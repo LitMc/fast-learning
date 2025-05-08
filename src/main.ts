@@ -154,9 +154,9 @@ const loadCards = async (setName: string): Promise<Card[]> => {
   return shuffle(
     rows.map(r => {
       const correct = r[cfg.answerKey];
-      // 他のレコードからダミー選択肢
+      // 他のレコードからダミー選択肢を取得し、重複を排除
       const distractors = shuffle(
-        rows.map(x => x[cfg.answerKey]).filter(v => v !== correct)
+        Array.from(new Set(rows.map(x => x[cfg.answerKey]))).filter(v => v !== correct)
       ).slice(0, cfg.choiceCount - 1);
       const choices = shuffle([correct!, ...distractors]).map(v => ({ id: v!, type: 'text' as const, text: v! }));
       return {
