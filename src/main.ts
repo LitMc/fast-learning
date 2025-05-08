@@ -144,7 +144,7 @@ async function showProgress() {
   /* 戻るボタン */
   const back = document.createElement('button');
   back.textContent = '戻る';
-  back.onclick = () => { root.innerHTML=''; running=true; ask(); };
+  back.onclick = stop;
   root.appendChild(back);
 }
 
