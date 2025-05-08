@@ -46,4 +46,6 @@ export type QuizConfig = {
   choiceCount: number;
   /** プロンプト文字列を生成する関数 */
   promptTemplate: (row: Record<string, string>) => string;
+  /** 選択肢文字列を生成する関数 */
+  choiceTemplate: (row: Record<string, string>) => string;
 };

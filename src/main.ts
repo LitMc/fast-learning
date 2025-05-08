@@ -169,21 +169,35 @@ const loadCards = async (setName: string): Promise<Card[]> => {
       uniqueMap.set(key, row);
     }
   });
-  const uniqueRows = shuffle(Array.from(uniqueMap.values()));
+  const uniqueRows = Array.from(uniqueMap.values());
 
   return shuffle(
     uniqueRows.map(r => {
       const correct = r[cfg.answerKey];
       const prompt = r[cfg.promptKey];
 
-      // ダミー選択肢の候補をシャッフルしてから選択
-      const distractorCandidates = shuffle(
-        uniqueRows.filter(x => x[cfg.answerKey] !== correct && x[cfg.promptKey] !== prompt)
-      ).map(x => x[cfg.answerKey]);
+      // 他のレコードからダミー選択肢を取得し、同じ promptKey を持つレコードを除外
+      const usedPromptKeys = new Set<string>([prompt]);
+      const distractors = shuffle(
+        Array.from(new Set(uniqueRows.map(x => x[cfg.answerKey])))
+          .filter(v => {
+            const distractorPrompt = uniqueRows.find(x => x[cfg.answerKey] === v)?.[cfg.promptKey];
+            if (distractorPrompt && !usedPromptKeys.has(distractorPrompt)) {
+              usedPromptKeys.add(distractorPrompt);
+              return true;
+            }
+            return false;
+          })
+      ).slice(0, cfg.choiceCount - 1);
 
-      const distractors = distractorCandidates.slice(0, cfg.choiceCount - 1);
-
-      const choices = shuffle([correct!, ...distractors]).map(v => ({ id: v!, type: 'text' as const, text: v! }));
+      const choices = shuffle([correct!, ...distractors]).map(v => {
+        const choiceRow = uniqueRows.find(x => x[cfg.answerKey] === v);
+        return {
+          id: v!,
+          type: 'text' as const,
+          text: cfg.choiceTemplate(choiceRow!) // カスタム選択肢表示
+        };
+      });
       return {
         id: `${setName}:${prompt}`,
         prompt: { type: 'text' as const, text: cfg.promptTemplate(r) },
