@@ -103,3 +103,26 @@ html {
   background:#2196f3;
   color:#fff; border-radius:6px; cursor:pointer;
 }
+
+/* Add styling for the main menu buttons */
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.main-menu button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.main-menu button:hover {
+  background-color: #e0e0e0;
+}

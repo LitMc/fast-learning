@@ -27,14 +27,25 @@ const stopBtn = document.getElementById('stop-btn') as HTMLButtonElement;
 const root    = document.getElementById('app')      as HTMLDivElement;
 const progressBtn = document.getElementById('progress-btn') as HTMLButtonElement;
 
-// 動的にボタンを生成
-quizConfigs.forEach(cfg => {
-  const btn = document.createElement('button');
-  btn.dataset.set = cfg.id;
-  btn.textContent = cfg.name;
-  btn.onclick = () => start(cfg.id);
-  nav.appendChild(btn);
-});
+/* Render the main menu dynamically */
+const renderMainMenu = () => {
+  root.innerHTML = ''; // Clear the main content area
+
+  const list = document.createElement('div');
+  list.className = 'main-menu'; // Add a class for styling
+
+  quizConfigs.forEach(cfg => {
+    const btn = document.createElement('button');
+    btn.textContent = cfg.name;
+    btn.onclick = () => start(cfg.id);
+    list.appendChild(btn);
+  });
+
+  root.appendChild(list);
+};
+
+// Render the main menu initially
+renderMainMenu();
 
 /* ------------------------------ runtime state ------------------------------ */
 let cards: Card[] = [];
@@ -229,6 +240,8 @@ const stop = () => {
   stopBtn.hidden = true;
   nav.hidden     = false;
   progressBtn.hidden = false;
+
+  renderMainMenu(); // Re-render the main menu when stopping the quiz
 };
 
 /* ---------------------------- event bindings ------------------------------ */
