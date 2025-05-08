@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/fast-learning/', // Replace with your repository name
+  base: '/fast-learning/', // Set base path for GitHub Pages
 });

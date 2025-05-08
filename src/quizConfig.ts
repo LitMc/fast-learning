@@ -3,7 +3,7 @@ export const quizConfigs: QuizConfig[] = [
   {
     id: 'phone',
     name: '市外局番 から 都道府県',
-    csvPath: '/data/phone.csv',
+    csvPath: `${import.meta.env.BASE_URL}data/phone.csv`,
     promptKey: 'phoneCode',
     answerKey: 'prefecture',
     choiceCount: 4,
@@ -13,7 +13,7 @@ export const quizConfigs: QuizConfig[] = [
   {
     id: 'phone-to-region',
     name: '市外局番 から 地域',
-    csvPath: '/data/phone.csv',
+    csvPath: `${import.meta.env.BASE_URL}data/phone.csv`,
     promptKey: 'phoneCode',
     answerKey: 'region',
     choiceCount: 4,
@@ -23,7 +23,7 @@ export const quizConfigs: QuizConfig[] = [
   {
     id: 'region-to-phone',
     name: '地域 から 市外局番',
-    csvPath: '/data/phone.csv',
+    csvPath: `${import.meta.env.BASE_URL}data/phone.csv`,
     promptKey: 'region',
     answerKey: 'phoneCode',
     choiceCount: 4,
@@ -33,7 +33,7 @@ export const quizConfigs: QuizConfig[] = [
   {
     id: 'region-to-pref',
     name: '地域 から 都道府県',
-    csvPath: '/data/phone.csv',
+    csvPath: `${import.meta.env.BASE_URL}data/phone.csv`,
     promptKey: 'region',
     answerKey: 'prefecture',
     choiceCount: 4,
@@ -43,7 +43,7 @@ export const quizConfigs: QuizConfig[] = [
   {
     id: 'pref-to-region',
     name: '都道府県 から 地域',
-    csvPath: '/data/phone.csv',
+    csvPath: `${import.meta.env.BASE_URL}data/phone.csv`,
     promptKey: 'prefecture',
     answerKey: 'region',
     choiceCount: 4,
@@ -53,7 +53,7 @@ export const quizConfigs: QuizConfig[] = [
   {
     id: 'prefecture-to-phone',
     name: '都道府県 から 市外局番',
-    csvPath: '/data/phone.csv',
+    csvPath: `${import.meta.env.BASE_URL}data/phone.csv`,
     promptKey: 'prefecture',
     answerKey: 'phoneCode',
     choiceCount: 4,
