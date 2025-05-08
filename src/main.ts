@@ -3,6 +3,8 @@ import './styles.css';
 import type { Card, Stat } from './types';
 import { renderCard } from './cardRenderer';
 import { loadHistory, saveHistory } from './historyStorage';
+import Papa from 'papaparse';
+import { quizConfigs } from './quizConfig';
 
 /* ---------------------------------- util ---------------------------------- */
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
@@ -139,8 +141,34 @@ const buildStats = (): Record<string, Stat> => {
 };
 
 /* ------------------------------ data loading ------------------------------- */
-const loadCards = async (setName: string): Promise<Card[]> =>
-  shuffle(await (await fetch(`/cards/${setName}.json`)).json());
+/**
+ * 汎用CSV → Card 生成
+ */
+const loadCards = async (setName: string): Promise<Card[]> => {
+  const cfg = quizConfigs.find(c => c.id === setName);
+  if (!cfg) throw new Error(`Unknown quiz config: ${setName}`);
+  const raw = await (await fetch(cfg.csvPath)).text();
+  const { data } = Papa.parse<Record<string, string>>(raw, { header: true });
+  // data may include empty trailing row
+  const rows = data.filter(r => Object.values(r).some(v => v));
+  return shuffle(
+    rows.map(r => {
+      const correct = r[cfg.answerKey];
+      // 他のレコードからダミー選択肢
+      const distractors = shuffle(
+        rows.map(x => x[cfg.answerKey]).filter(v => v !== correct)
+      ).slice(0, cfg.choiceCount - 1);
+      const choices = shuffle([correct!, ...distractors]).map(v => ({ id: v!, type: 'text' as const, text: v! }));
+      return {
+        id: `${setName}:${r[cfg.promptKey]}`,
+        prompt: { type: 'text' as const, text: cfg.promptTemplate(r) },
+        choices,
+        answer: correct!,
+        tags: [setName]
+      };
+    })
+  );
+};
 
 /* ------------------------------ quiz routine ------------------------------ */
 const ask = () => {
