@@ -8,7 +8,7 @@ html {
 #app {
   max-width: 480px;
   margin: auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .choices {
@@ -56,8 +56,10 @@ html {
 .toast.ok    { background: #4caf50; }  /* 緑 */
 .toast.fail  { background: #f44336; }  /* 赤 */
 
-/* Divide the topbar into two sections */
+/* Add a light background color to the topbar */
 #topbar {
+  background-color: #eeeeee;
+  border-bottom: 1px solid #b1b1b1; /* Subtle border to separate from content */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -90,9 +92,8 @@ html {
 
 #progress-btn {
   padding: 0.4rem 0.8rem;
-  border: 1px solid #2196f3;
-  background: #2196f3;
-  color: #fff;
+  border: 1px solid #cccccc;
+  background: #f9f9f9;
   border-radius: 6px;
   cursor: pointer;
 }
