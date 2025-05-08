@@ -14,6 +14,7 @@ const nav     = document.getElementById('nav')      as HTMLElement;
 const stopBtn = document.getElementById('stop-btn') as HTMLButtonElement;
 const root    = document.getElementById('app')      as HTMLDivElement;
 const progressBtn = document.getElementById('progress-btn') as HTMLButtonElement;
+const themeToggleBtn = document.getElementById('theme-toggle-btn') as HTMLButtonElement;
 
 /* Render the main menu dynamically */
 const renderMainMenu = () => {
@@ -282,3 +283,12 @@ nav.querySelectorAll<HTMLButtonElement>('button').forEach(btn => {
 });
 
 stopBtn.onclick = stop;
+
+// ダークモード切り替え機能
+const toggleTheme = () => {
+  document.body.classList.toggle('dark-mode');
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  themeToggleBtn.textContent = isDarkMode ? 'ライトモード' : 'ダークモード';
+};
+
+themeToggleBtn.onclick = toggleTheme;
