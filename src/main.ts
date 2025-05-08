@@ -32,44 +32,90 @@ let running = false;
 let history = loadHistory();
 
 /* 学習状況画面を描画 */
-function showProgress() {
+async function showProgress() {
   running = false;                 // 出題ループ停止
   root.innerHTML = '';
 
-  const stats = buildStats();      // 全履歴から再計算
-  // カード配列と結合して配列化
-  const rows = cards.map(c => ({
-    card: c,
-    stat: stats[c.id] ?? { asked: 0, correct: 0 },
-  }))
-  // 正答率昇順（苦手 → 得意）
-  .sort((a, b) => {
-    const ra = a.stat.asked ? a.stat.correct / a.stat.asked : -1;
-    const rb = b.stat.asked ? b.stat.correct / b.stat.asked : -1;
-    return ra - rb;
+  // 問題セット選択ドロップダウン
+  const sets = ['demo','phone'];
+  const select = document.createElement('select');
+  sets.forEach(s => {
+    const opt = document.createElement('option'); opt.value = s; opt.textContent = s; select.appendChild(opt);
   });
+  const label = document.createElement('label'); label.textContent = '問題セット: '; label.appendChild(select);
+  root.appendChild(label);
+
+  let cardsData = await loadCards(select.value);
+  select.onchange = async () => {
+    cardsData = await loadCards(select.value);
+    renderStats();
+  };
 
   const table = document.createElement('table');
   table.className = 'stat-table';
   table.innerHTML = `
     <thead><tr>
-      <th>問題</th><th>正答 / 出題</th><th>正答率</th>
+      <th>問題</th><th>正答</th><th>正答数</th><th>出題数</th><th>正答率</th>
     </tr></thead>
     <tbody></tbody>`;
   const tbody = table.tBodies[0];
 
-  rows.forEach(({ card, stat }) => {
-    const rate = stat.asked ? ((stat.correct / stat.asked) * 100).toFixed(0) : '0';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${card.prompt.type === 'text'
-              ? card.prompt.text.slice(0, 20) : '[画像]'}</td>
-      <td>${stat.correct} / ${stat.asked}</td>
-      <td>${rate}%</td>`;
-    tbody.appendChild(tr);
+  // ソート設定（正答列も含む）
+  let sortKey: 'prompt'|'answer'|'correct'|'asked'|'rate' = 'rate';
+  let sortOrder: 1|-1 = -1;
+  const renderStats = () => {
+    tbody.innerHTML = '';
+    const stats = buildStats();
+    const rows = cardsData.map(c => ({
+      card: c,
+      stat: stats[c.id] ?? { asked:0,correct:0 }
+    }));
+    const sorted = rows.sort((a,b) => {
+      let diff=0;
+      if(sortKey==='prompt') diff = (a.card.prompt.type==='text'?a.card.prompt.text:'').localeCompare(b.card.prompt.type==='text'?b.card.prompt.text:'');
+      else if(sortKey==='answer') {
+        const ta = (a.card.choices.find(ch => ch.id === a.card.answer) ?? { type:'text', text:'' }).type === 'text'
+          ? (a.card.choices.find(ch => ch.id === a.card.answer) as any).text : '';
+        const tb = (b.card.choices.find(ch => ch.id === b.card.answer) ?? { type:'text', text:'' }).type === 'text'
+          ? (b.card.choices.find(ch => ch.id === b.card.answer) as any).text : '';
+        diff = ta.localeCompare(tb);
+      }
+      else if(sortKey==='correct') diff = a.stat.correct - b.stat.correct;
+      else if(sortKey==='asked') diff = a.stat.asked - b.stat.asked;
+      else diff = (a.stat.asked? a.stat.correct/a.stat.asked:0) - (b.stat.asked?b.stat.correct/b.stat.asked:0);
+      return diff * sortOrder;
+    });
+    sorted.forEach(({card,stat})=>{
+      const rate = stat.asked?((stat.correct/stat.asked)*100).toFixed(0):'0';
+      const tr = document.createElement('tr');
+      // 正答のテキスト取得
+      const correctChoice = card.choices.find(ch => ch.id === card.answer);
+      const correctText = correctChoice?.type==='text' ? correctChoice.text : '[画像]';
+      tr.innerHTML = `
+        <td>${card.prompt.type==='text'?card.prompt.text.slice(0,20):'[画像]'}</td>
+        <td>${correctText.slice(0,20)}</td>
+        <td>${stat.correct}</td>
+        <td>${stat.asked}</td>
+        <td>${rate}%</td>`;
+      tbody.appendChild(tr);
+    });
+  };
+  // ヘッダークリックでソート
+  const headers = table.tHead!.rows[0].cells;
+  ['prompt','answer','correct','asked','rate'].forEach((key,i)=>{
+    headers[i].style.cursor='pointer';
+    headers[i].onclick=()=>{
+      if(sortKey===key) sortOrder = sortOrder === 1 ? -1 : 1;
+      else { sortKey = key as any; sortOrder = -1; }
+      // ヘッダー表示更新
+      ['問題','正答','正答数','出題数','正答率'].forEach((txt,j)=>headers[j].textContent=txt);
+      headers[i].textContent += sortOrder===-1?' ▼':' ▲';
+      renderStats();
+    };
   });
-
+  headers[4].textContent += ' ▼';
   root.appendChild(table);
+  renderStats();
 
   /* 戻るボタン */
   const back = document.createElement('button');
