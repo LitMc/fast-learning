@@ -33,7 +33,8 @@
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "mechatroner.rainbow-csv",
-        "ms-python.python"
+        "ms-python.python",
+        "janisdd.vscode-edit-csv"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
