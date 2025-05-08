@@ -1,6 +1,10 @@
 {
   // コンテナ名 (VS Code 接続タブに表示されるだけ)
-  "name": "memorizer-dev",
+  "name": "Fast Learning Dev Container",
+
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
 
   // Ubuntu ベースに Node を後付けする公式 Feature 構成
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
@@ -28,12 +32,15 @@
       "extensions": [
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
-        "mechatroner.rainbow-csv"
+        "mechatroner.rainbow-csv",
+        "ms-python.python"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
         "editor.formatOnSave": true
       }
     }
-  }
+  },
+
+  "postCreateCommand": "pip install requests beautifulsoup4"
 }
