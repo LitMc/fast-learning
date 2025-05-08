@@ -26,5 +26,23 @@ export const quizConfigs: QuizConfig[] = [
     answerKey: 'region',
     choiceCount: 4,
     promptTemplate: r => `${r.phoneCode} の地域は？`
+  },
+  {
+    id: 'region-to-pref',
+    name: '地域 から 都道府県',
+    csvPath: '/data/phone.csv',
+    promptKey: 'region',
+    answerKey: 'prefecture',
+    choiceCount: 4,
+    promptTemplate: r => `${r.region} の都道府県は？`
+  },
+  {
+    id: 'pref-to-region',
+    name: '都道府県 から 地域',
+    csvPath: '/data/phone.csv',
+    promptKey: 'prefecture',
+    answerKey: 'region',
+    choiceCount: 4,
+    promptTemplate: r => `${r.prefecture} の地域は？`
   }
 ]
